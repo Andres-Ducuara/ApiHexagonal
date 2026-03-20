@@ -9,6 +9,7 @@ public static class ApplicationServiceCollectionExtensions
     {
         services.AddScoped<CreateTodoUseCase>();
         services.AddScoped<GetTodoByIdUseCase>();
+        services.AddScoped<UpdateTodoEmailUseCase>();
 
         return services;
     }

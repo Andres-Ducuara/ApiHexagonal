@@ -23,12 +23,7 @@ public sealed class CreateTodoUseCase
         var todo = Todo.Create(Guid.NewGuid(), title);
         await _todoRepository.AddAsync(todo, cancellationToken);
 
-        return new TodoDto(todo.Id, todo.Title, todo.IsCompleted);
-    }
-
-    public string Demo()
-    {
-        return "";
+        return new TodoDto(todo.Id, todo.Title, todo.IsCompleted, Email: todo.Email?.Value);
     }
 
 }

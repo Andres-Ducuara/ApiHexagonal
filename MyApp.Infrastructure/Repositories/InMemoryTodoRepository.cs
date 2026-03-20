@@ -19,5 +19,12 @@ public sealed class InMemoryTodoRepository : ITodoRepository
         _store.TryGetValue(id, out var todo);
         return Task.FromResult(todo);
     }
+
+    public Task UpdateAsync(Todo todo, CancellationToken cancellationToken)
+    {
+        // Como es InMemory, guardamos la referencia actualizada.
+        _store[todo.Id] = todo;
+        return Task.CompletedTask;
+    }
 }
 

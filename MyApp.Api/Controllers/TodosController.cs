@@ -10,13 +10,16 @@ public sealed class TodosController : ControllerBase
 {
     private readonly CreateTodoUseCase _createTodoUseCase;
     private readonly GetTodoByIdUseCase _getTodoByIdUseCase;
+    private readonly UpdateTodoEmailUseCase _updateTodoEmailUseCase;
 
     public TodosController(
         CreateTodoUseCase createTodoUseCase,
-        GetTodoByIdUseCase getTodoByIdUseCase)
+        GetTodoByIdUseCase getTodoByIdUseCase,
+        UpdateTodoEmailUseCase updateTodoEmailUseCase)
     {
         _createTodoUseCase = createTodoUseCase;
         _getTodoByIdUseCase = getTodoByIdUseCase;
+        _updateTodoEmailUseCase = updateTodoEmailUseCase;
     }
 
     [HttpPost]
@@ -50,5 +53,29 @@ public sealed class TodosController : ControllerBase
     }
 
     public sealed record CreateTodoRequest(string Title);
+
+    [HttpPatch("{id:guid}/email")]
+    public async Task<ActionResult<TodoDto>> UpdateEmail(
+        [FromRoute] Guid id,
+        [FromBody] UpdateEmailRequest request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var todo = await _updateTodoEmailUseCase.ExecuteAsync(id, request.Email, cancellationToken);
+            if (todo is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(todo);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    public sealed record UpdateEmailRequest(string Email);
 }
 
