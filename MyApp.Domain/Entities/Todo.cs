@@ -5,11 +5,11 @@ namespace MyApp.Domain.Entities;
 public sealed class Todo
 {
     public Guid Id { get; }
-    public string Title { get; }
+    public TodoTitle Title { get; }
     public bool IsCompleted { get; private set; }
     public Email? Email { get; private set; }
 
-    private Todo(Guid id, string title, bool isCompleted)
+    private Todo(Guid id, TodoTitle title, bool isCompleted)
     {
         Id = id;
         Title = title;
@@ -17,19 +17,19 @@ public sealed class Todo
         Email = null;
     }
 
-    public static Todo Create(Guid id, string title)
+    public static Todo Create(Guid id, TodoTitle title)
     {
         if (id == Guid.Empty)
         {
             throw new ArgumentException("Id inválido.", nameof(id));
         }
 
-        if (string.IsNullOrWhiteSpace(title))
+        if (title is null)
         {
-            throw new ArgumentException("Title requerido.", nameof(title));
+            throw new ArgumentNullException(nameof(title));
         }
 
-        return new Todo(id, title.Trim(), isCompleted: false);
+        return new Todo(id, title, isCompleted: false);
     }
 
     /// <summary>

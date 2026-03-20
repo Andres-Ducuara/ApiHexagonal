@@ -1,6 +1,7 @@
 using MyApp.Application.Dtos;
 using MyApp.Application.Ports;
 using MyApp.Domain.Entities;
+using MyApp.Domain.ValueObjects;
 
 namespace MyApp.Application.UseCases;
 
@@ -15,15 +16,11 @@ public sealed class CreateTodoUseCase
 
     public async Task<TodoDto> ExecuteAsync(string title, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(title))
-        {
-            throw new ArgumentException("Title es requerido.", nameof(title));
-        }
-
-        var todo = Todo.Create(Guid.NewGuid(), title);
+        var titleVo = TodoTitle.Create(title);
+        var todo = Todo.Create(Guid.NewGuid(), titleVo);
         await _todoRepository.AddAsync(todo, cancellationToken);
 
-        return new TodoDto(todo.Id, todo.Title, todo.IsCompleted, Email: todo.Email?.Value);
+        return new TodoDto(todo.Id, todo.Title.Value, todo.IsCompleted, Email: todo.Email?.Value);
     }
 
 }

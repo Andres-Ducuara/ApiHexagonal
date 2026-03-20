@@ -20,7 +20,7 @@ public sealed class GetTodoByIdUseCase
             return null;
         }
 
-        return new TodoDto(todo.Id, todo.Title, todo.IsCompleted, Email: todo.Email?.Value);
+        return new TodoDto(todo.Id, todo.Title.Value, todo.IsCompleted, Email: todo.Email?.Value);
     }
 }
 
